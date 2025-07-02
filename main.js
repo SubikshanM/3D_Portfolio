@@ -75,7 +75,7 @@ const createScene = () => {
             rotationY: Math.PI / 2
         },
         {
-            text: "🧠 Skills\n\nHTML, CSS, JS, PHP\nBabylon.js, MySQL, Linux",
+            text: "🧠 Skills\n\n✔️HTML\n✔️CSS\n✔️JS\n✔️PHP\n✔️Babylon.js\n✔️MySQL\n✔️Linux",
             position: new BABYLON.Vector3(4.9, 0, 0),
             rotationY: -Math.PI / 2
         },
@@ -142,7 +142,7 @@ const createScene = () => {
     ctx.fillStyle = "#00ccff";
     ctx.textAlign = "center";
 
-    const aboutText = "👋 Hello! I'm Subikshan Mani,\na passionate full-stack web developer\nwith expertise in HTML, CSS, JS, PHP, and Babylon.js.\nI love crafting interactive 3D experiences.";
+    const aboutText = "👋 Hello! I'm Subikshan Mani,\nI am a passionate college student\nwith a keen interest in web development and technology,\nand very interested in researching about technologies \nthat inspires me a lot.";
     const lines = aboutText.split("\n");
     lines.forEach((line, i) => {
         ctx.fillText(line, 512, 200 + i * 60);
@@ -216,23 +216,29 @@ const createScene = () => {
     return scene;
 };
 
+// ✅ Fixed wrapText with support for newlines
 function wrapText(ctx, text, maxWidth) {
-    const words = text.split(" ");
+    const paragraphs = text.split('\n'); // Split by \n
     const lines = [];
-    let currentLine = "";
 
-    words.forEach(word => {
-        const testLine = currentLine + word + " ";
-        const testWidth = ctx.measureText(testLine).width;
-        if (testWidth > maxWidth && currentLine !== "") {
-            lines.push(currentLine.trim());
-            currentLine = word + " ";
-        } else {
-            currentLine = testLine;
-        }
+    paragraphs.forEach(paragraph => {
+        const words = paragraph.split(" ");
+        let currentLine = "";
+
+        words.forEach(word => {
+            const testLine = currentLine + word + " ";
+            const testWidth = ctx.measureText(testLine).width;
+            if (testWidth > maxWidth && currentLine !== "") {
+                lines.push(currentLine.trim());
+                currentLine = word + " ";
+            } else {
+                currentLine = testLine;
+            }
+        });
+
+        lines.push(currentLine.trim()); // Push last line of this paragraph
     });
 
-    lines.push(currentLine.trim());
     return lines;
 }
 
