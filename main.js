@@ -15,7 +15,6 @@ const createScene = () => {
     camera.wheelPrecision = 1000;
     camera.panningSensibility = 0;
 
-    // Removed center light — no unnecessary light now
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.8;
 
@@ -70,12 +69,12 @@ const createScene = () => {
     // 🧱 Side Panels
     const panels = [
         {
-            text: "📁 Projects\n\n✔️ 3D Portfolio Room\n✔️ Resume Builder\n✔️ Mario Game\n✔️ Real Estate System",
+            text: "📁 Projects\n\n✨ Spell Corrector GUI \nUsing Tkinter\n✨ Expense Tracker Application \nUsing Java\n✨ Home Security Analytics Using IoT\n✨ Real Estate Management System\n✨ Wings On Time\n✨ To-Do List",
             position: new BABYLON.Vector3(-4.9, 0, 0),
             rotationY: Math.PI / 2
         },
         {
-            text: "🧠 Skills\n\n✔️HTML\n✔️CSS\n✔️JS\n✔️PHP\n✔️Babylon.js\n✔️MySQL\n✔️Linux",
+            text: "🧠 Skills\n\n🌠 HTML\n🌠 CSS\n🌠 JavaScript\n🌠 PHP\n🌠 MySQL\n🌠 Python\n🌠 C\n🌠 Java",
             position: new BABYLON.Vector3(4.9, 0, 0),
             rotationY: -Math.PI / 2
         },
@@ -129,7 +128,7 @@ const createScene = () => {
         scene.beginAnimation(glowFrame, 0, 60, true);
     });
 
-    // 📄 About Text on Floor (Fixed)
+    // 📄 About Text on Floor
     const aboutPlane = BABYLON.MeshBuilder.CreatePlane("aboutPlane", { width: 6, height: 6 }, scene);
     aboutPlane.rotation.x = Math.PI / 2;
     aboutPlane.position.y = -4.9;
@@ -155,16 +154,43 @@ const createScene = () => {
     aboutMat.backFaceCulling = false;
     aboutPlane.material = aboutMat;
 
-    // 📩 Contact Buttons
+    // 🎓 Education on Ceiling
+    const eduPlane = BABYLON.MeshBuilder.CreatePlane("eduPlane", { width: 6, height: 3 }, scene);
+    eduPlane.rotation.x = -Math.PI / 2;
+    eduPlane.position.y = 4.89;
+
+    const eduTexture = new BABYLON.DynamicTexture("eduTexture", { width: 1024, height: 512 }, scene, true);
+    const eduCtx = eduTexture.getContext();
+    eduCtx.fillStyle = "black";
+    eduCtx.fillRect(0, 0, 1024, 512);
+    eduCtx.font = "bold 30px Arial";
+    eduCtx.fillStyle = "#00ccff";
+    eduCtx.textAlign = "center";
+
+    const eduText = "🎓 Education\nB.Tech in Artificial Intelligence And Data Science\nM. Kumarasamy College Of Engineering, Karur, Tamil Nadu (2023 - 2027)\nHSC - Computer Science at Trinity International School, Namakkal, Tamil Nadu\n(2022 - 2023)\nSSLC - Park View Academy, Namakkal, Tamil Nadu\n(2020 - 2021)";
+    const eduLines = wrapText(eduCtx, eduText, 900);
+    eduLines.forEach((line, i) => {
+        eduCtx.fillText(line, 512, 80 + i * 50);
+    });
+    eduTexture.update();
+
+    const eduMat = new BABYLON.StandardMaterial("eduMat", scene);
+    eduMat.diffuseTexture = eduTexture;
+    eduMat.emissiveColor = new BABYLON.Color3(0.9, 0.9, 0.9);
+    eduMat.backFaceCulling = false;
+    eduPlane.material = eduMat;
+
+    // 📩 Contact Buttons (2x2 layout)
     const contactButtons = [
-        { label: "📧 Email", action: () => window.open("mailto:subikshan.mailbox@gmail.com", "_blank"), yOffset: 1 },
-        { label: "📞 Call", action: () => window.open("tel:+919095076843", "_blank"), yOffset: 0 },
-        { label: "LinkedIn", action: () => window.open("https://www.linkedin.com/in/subikshan-mani-ba0321290/", "_blank"), yOffset: -1 }
+        { label: "📧 Email", action: () => window.open("mailto:subikshan.mailbox@gmail.com", "_blank"), position: new BABYLON.Vector3(-1.3, 0.7, 4.89) },
+        { label: "📞 Call", action: () => window.open("tel:+919095076843", "_blank"), position: new BABYLON.Vector3(1.3, 0.7, 4.89) },
+        { label: "LinkedIn", action: () => window.open("https://www.linkedin.com/in/subikshan-mani-ba0321290/", "_blank"), position: new BABYLON.Vector3(-1.3, -0.7, 4.89) },
+        { label: "🌐 Website", action: () => window.open("https://your-portfolio-link.com", "_blank"), position: new BABYLON.Vector3(1.3, -0.7, 4.89) }
     ];
 
     contactButtons.forEach((btn, index) => {
         const button = BABYLON.MeshBuilder.CreatePlane("contactButton" + index, { width: 2, height: 0.6 }, scene);
-        button.position = new BABYLON.Vector3(0, btn.yOffset, 4.89);
+        button.position = btn.position;
         button.rotation.y = Math.PI;
 
         const buttonTexture = new BABYLON.DynamicTexture("btnTexture" + index, { width: 512, height: 128 }, scene, true);
@@ -188,7 +214,7 @@ const createScene = () => {
         button.material = buttonMat;
 
         const buttonFrame = BABYLON.MeshBuilder.CreatePlane("btnFrame" + index, { width: 2.2, height: 0.8 }, scene);
-        buttonFrame.position = new BABYLON.Vector3(0, btn.yOffset, 4.891);
+        buttonFrame.position = btn.position.add(new BABYLON.Vector3(0, 0, 0.001));
         buttonFrame.rotation.y = Math.PI;
 
         const glowMat = new BABYLON.StandardMaterial("btnFrameMat" + index, scene);
@@ -200,6 +226,16 @@ const createScene = () => {
         button.actionManager = new BABYLON.ActionManager(scene);
         button.actionManager.registerAction(
             new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, () => btn.action())
+        );
+        button.actionManager.registerAction(
+            new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, () => {
+                button.scaling = new BABYLON.Vector3(1.1, 1.1, 1.1);
+            })
+        );
+        button.actionManager.registerAction(
+            new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, () => {
+                button.scaling = new BABYLON.Vector3(1, 1, 1);
+            })
         );
     });
 
@@ -216,9 +252,8 @@ const createScene = () => {
     return scene;
 };
 
-// ✅ Fixed wrapText with support for newlines
 function wrapText(ctx, text, maxWidth) {
-    const paragraphs = text.split('\n'); // Split by \n
+    const paragraphs = text.split('\n');
     const lines = [];
 
     paragraphs.forEach(paragraph => {
@@ -236,7 +271,7 @@ function wrapText(ctx, text, maxWidth) {
             }
         });
 
-        lines.push(currentLine.trim()); // Push last line of this paragraph
+        lines.push(currentLine.trim());
     });
 
     return lines;
