@@ -185,7 +185,7 @@ const createScene = () => {
         { label: "📧 Email", action: () => window.open("mailto:subikshan.mailbox@gmail.com", "_blank"), position: new BABYLON.Vector3(-1.3, 0.7, 4.89) },
         { label: "📞 Call", action: () => window.open("tel:+919095076843", "_blank"), position: new BABYLON.Vector3(1.3, 0.7, 4.89) },
         { label: "LinkedIn", action: () => window.open("https://www.linkedin.com/in/subikshan-mani-ba0321290/", "_blank"), position: new BABYLON.Vector3(-1.3, -0.7, 4.89) },
-        { label: "🌐 Website", action: () => window.open("https://your-portfolio-link.com", "_blank"), position: new BABYLON.Vector3(1.3, -0.7, 4.89) }
+        { label: "🌐 Website", action: () => window.open("https://subikshanm.github.io/New_Portfolio/", "_blank"), position: new BABYLON.Vector3(1.3, -0.7, 4.89) }
     ];
 
     contactButtons.forEach((btn, index) => {
